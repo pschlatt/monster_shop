@@ -8,11 +8,23 @@ Rails.application.routes.draw do
     resources :items, only: :index
   end
 
-  resources :items, only: [:index, :show, :edit, :update, :destroy] do
-    resources :reviews, only: [:new, :create]
+  resources :items do
+    resources :reviews, only: [:create]
   end
 
-  resources :reviews, only: [:edit, :update, :destroy]
+  get '/items', to: "items#index"
+  get '/items/:id', to: "items#show"
+  get '/items/:id/edit', to: "items#edit"
+  patch '/items/:id', to: "items#update"
+  delete '/items/:id', to: "items#destroy"
+
+
+  get '/items/:item_id/reviews/new', to: "reviews#new", as: "new_item_review"
+
+
+  get '/reviews/:id/edit', to: "reviews#edit", as:"edit_review"
+  patch '/reviews/:id', to: "reviews#update"
+  delete '/reviews/:id', to: "reviews#destroy", as: "review"
 
   get '/cart', to: 'cart#show'
   post '/cart/:item_id', to: 'cart#add_item'
@@ -20,8 +32,9 @@ Rails.application.routes.draw do
   patch '/cart/:change/:item_id', to: 'cart#update_quantity'
   delete '/cart/:item_id', to: 'cart#remove_item'
 
-  resources :users, only: [:new]
 
+
+  get '/users/new', to: 'users#new'
   get '/register', to: 'users#register'
   get '/profile', to: 'users#show', as: 'profile'
   post '/profile', to: 'users#create'
